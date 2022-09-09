@@ -1,0 +1,1760 @@
+<?php
+session_start(); // Initialize session data
+ob_start(); // Turn on output buffering
+?>
+<?php include "ewcfg6.php" ?>
+<?php include "ewmysql6.php" ?>
+<?php include "phpfn6.php" ?>
+<?php include "productsinfo.php" ?>
+<?php include "usersinfo.php" ?>
+<?php include "userfn6.php" ?>
+<?php
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // Always modified
+header("Cache-Control: private, no-store, no-cache, must-revalidate"); // HTTP/1.1 
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache"); // HTTP/1.0
+?>
+<?php
+
+// Define page object
+$products_update = new cproducts_update();
+$Page =& $products_update;
+
+// Page init processing
+$products_update->Page_Init();
+
+// Page main processing
+$products_update->Page_Main();
+?>
+<?php include "header.php" ?>
+<script type="text/javascript">
+<!--
+
+// Create page object
+var products_update = new ew_Page("products_update");
+
+// page properties
+products_update.PageID = "update"; // page ID
+var EW_PAGE_ID = products_update.PageID; // for backward compatibility
+
+// extend page with ValidateForm function
+products_update.ValidateForm = function(fobj) {
+	if (!this.ValidateRequired)
+		return true; // ignore validation
+	if (fobj.a_confirm && fobj.a_confirm.value == "F")
+		return true;
+	if (!ew_UpdateSelected(fobj)) {
+		alert('No field selected for update');
+		return false;
+	}
+	var uelm;
+	var i, elm, aelm, infix;
+	var rowcnt = (fobj.key_count) ? Number(fobj.key_count.value) : 1;
+	for (i=0; i<rowcnt; i++) {
+		infix = (fobj.key_count) ? String(i+1) : "";
+		elm = fobj.elements["x" + infix + "_name"];
+		uelm = fobj.elements["u" + infix + "_name"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - name");
+		}
+		elm = fobj.elements["x" + infix + "_name_arabic"];
+		uelm = fobj.elements["u" + infix + "_name_arabic"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - name arabic");
+		}
+		elm = fobj.elements["x" + infix + "_level"];
+		uelm = fobj.elements["u" + infix + "_level"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - level");
+		}
+		elm = fobj.elements["x" + infix + "_level"];
+		uelm = fobj.elements["u" + infix + "_level"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckInteger(elm.value))
+				return ew_OnError(this, elm, "Incorrect integer - level");
+		}
+		elm = fobj.elements["x" + infix + "_image"];
+		uelm = fobj.elements["u" + infix + "_image"];
+		aelm = fobj.elements["a" + infix + "_image"];
+		var chk_image = (aelm && aelm[0])?(aelm[2].checked):true;
+		if (uelm && uelm.checked) {
+			if (elm && chk_image && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - image");
+		}
+		elm = fobj.elements["x" + infix + "_image"];
+		uelm = fobj.elements["u" + infix + "_image"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckFileType(elm.value))
+				return ew_OnError(this, elm, "File type is not allowed.");
+		}
+		elm = fobj.elements["x" + infix + "_image2"];
+		uelm = fobj.elements["u" + infix + "_image2"];
+		aelm = fobj.elements["a" + infix + "_image2"];
+		var chk_image2 = (aelm && aelm[0])?(aelm[2].checked):true;
+		if (uelm && uelm.checked) {
+			if (elm && chk_image2 && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - image 2");
+		}
+		elm = fobj.elements["x" + infix + "_image2"];
+		uelm = fobj.elements["u" + infix + "_image2"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckFileType(elm.value))
+				return ew_OnError(this, elm, "File type is not allowed.");
+		}
+		elm = fobj.elements["x" + infix + "_image3"];
+		uelm = fobj.elements["u" + infix + "_image3"];
+		aelm = fobj.elements["a" + infix + "_image3"];
+		var chk_image3 = (aelm && aelm[0])?(aelm[2].checked):true;
+		if (uelm && uelm.checked) {
+			if (elm && chk_image3 && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - image 3");
+		}
+		elm = fobj.elements["x" + infix + "_image3"];
+		uelm = fobj.elements["u" + infix + "_image3"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckFileType(elm.value))
+				return ew_OnError(this, elm, "File type is not allowed.");
+		}
+		elm = fobj.elements["x" + infix + "_file"];
+		uelm = fobj.elements["u" + infix + "_file"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckFileType(elm.value))
+				return ew_OnError(this, elm, "File type is not allowed.");
+		}
+		elm = fobj.elements["x" + infix + "_special"];
+		uelm = fobj.elements["u" + infix + "_special"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - special");
+		}
+		elm = fobj.elements["x" + infix + "_order"];
+		uelm = fobj.elements["u" + infix + "_order"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - order");
+		}
+		elm = fobj.elements["x" + infix + "_order"];
+		uelm = fobj.elements["u" + infix + "_order"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_CheckInteger(elm.value))
+				return ew_OnError(this, elm, "Incorrect integer - order");
+		}
+		elm = fobj.elements["x" + infix + "_active"];
+		uelm = fobj.elements["u" + infix + "_active"];
+		if (uelm && uelm.checked) {
+			if (elm && !ew_HasValue(elm))
+				return ew_OnError(this, elm, "Please enter required field - active");
+		}
+
+		// Call Form Custom Validate event
+		if (!this.Form_CustomValidate(fobj)) return false;
+	}
+	return true;
+}
+
+// extend page with Form_CustomValidate function
+products_update.Form_CustomValidate =  
+ function(fobj) { // DO NOT CHANGE THIS LINE!
+
+ 	// Your custom validation code here, return false if invalid. 
+ 	return true;
+ }
+products_update.SelectAllKey = function(elem) {
+	ew_SelectAll(elem);
+}
+<?php if (EW_CLIENT_VALIDATE) { ?>
+products_update.ValidateRequired = true; // uses JavaScript validation
+<?php } else { ?>
+products_update.ValidateRequired = false; // no JavaScript validation
+<?php } ?>
+
+// search highlight properties
+products_update.ShowHighlightText = "Show highlight"; 
+products_update.HideHighlightText = "Hide highlight";
+
+//-->
+</script>
+<script type="text/javascript" src="fckeditor/fckeditor.js"></script>
+<script type="text/javascript">
+<!--
+_width_multiplier = 16;
+_height_multiplier = 60;
+var ew_DHTMLEditors = [];
+
+// update value from editor to textarea
+function ew_UpdateTextArea() {
+	if (typeof ew_DHTMLEditors != 'undefined' && typeof FCKeditorAPI != 'undefined') {			
+			var inst;			
+			for (inst in FCKeditorAPI.__Instances)
+				FCKeditorAPI.__Instances[inst].UpdateLinkedField();
+	}
+}
+
+// update value from textarea to editor
+function ew_UpdateDHTMLEditor(name) {
+	if (typeof ew_DHTMLEditors != 'undefined' && typeof FCKeditorAPI != 'undefined') {
+		var inst = FCKeditorAPI.GetInstance(name);		
+		if (inst)
+			inst.SetHTML(inst.LinkedField.value)
+	}
+}
+
+// focus editor
+function ew_FocusDHTMLEditor(name) {
+	if (typeof ew_DHTMLEditors != 'undefined' && typeof FCKeditorAPI != 'undefined') {
+		var inst = FCKeditorAPI.GetInstance(name);	
+		if (inst && inst.EditorWindow) {
+			inst.EditorWindow.focus();
+		}
+	}
+}
+
+//-->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+// Write your client script here, no need to add script tags.
+// To include another .js script, use:
+// ew_ClientScriptInclude("my_javascript.js"); 
+//-->
+
+</script>
+<p><span class="phpmaker">Update TABLE: products<br><br>
+<a href="<?php echo $products->getReturnUrl() ?>">Back to List</a></span></p>
+<?php $products_update->ShowMessage() ?>
+<form name="fproductsupdate" id="fproductsupdate" action="<?php echo ew_CurrentPage() ?>" method="post" enctype="multipart/form-data">
+<p>
+<input type="hidden" name="t" id="t" value="products">
+<input type="hidden" name="a_update" id="a_update" value="U">
+<?php for ($i = 0; $i < $products_update->nKeySelected; $i++) { ?>
+<input type="hidden" name="k<?php echo $i+1 ?>_key" id="key<?php echo $i+1 ?>" value="<?php echo ew_HtmlEncode($products_update->arRecKeys[$i]) ?>">
+<?php } ?>
+<table cellspacing="0" class="ewGrid"><tr><td class="ewGridContent">
+<div class="ewGridMiddlePanel">
+<table cellspacing="0" class="ewTable">
+	<tr class="ewTableHeader">
+		<td>Update<input type="checkbox" name="u" id="u" onclick="ew_SelectAll(this);"></td>
+		<td>Field Name</td>
+		<td>New Value</td>
+	</tr>
+<?php if ($products->name->Visible) { // name ?>
+	<tr<?php echo $products->name->RowAttributes ?>>
+		<td<?php echo $products->name->CellAttributes() ?>>
+<input type="checkbox" name="u_name" id="u_name" value="1"<?php echo ($products->name->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->name->CellAttributes() ?>>name</td>
+		<td<?php echo $products->name->CellAttributes() ?>><span id="el_name">
+<input type="text" name="x_name" id="x_name" size="30" maxlength="200" value="<?php echo $products->name->EditValue ?>"<?php echo $products->name->EditAttributes() ?>>
+</span><?php echo $products->name->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->name_arabic->Visible) { // name_arabic ?>
+	<tr<?php echo $products->name_arabic->RowAttributes ?>>
+		<td<?php echo $products->name_arabic->CellAttributes() ?>>
+<input type="checkbox" name="u_name_arabic" id="u_name_arabic" value="1"<?php echo ($products->name_arabic->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->name_arabic->CellAttributes() ?>>name arabic</td>
+		<td<?php echo $products->name_arabic->CellAttributes() ?>><span id="el_name_arabic">
+<input type="text" name="x_name_arabic" id="x_name_arabic" size="30" maxlength="200" value="<?php echo $products->name_arabic->EditValue ?>"<?php echo $products->name_arabic->EditAttributes() ?>>
+</span><?php echo $products->name_arabic->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->level->Visible) { // level ?>
+	<tr<?php echo $products->level->RowAttributes ?>>
+		<td<?php echo $products->level->CellAttributes() ?>>
+<input type="checkbox" name="u_level" id="u_level" value="1"<?php echo ($products->level->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->level->CellAttributes() ?>>level</td>
+		<td<?php echo $products->level->CellAttributes() ?>><span id="el_level">
+<input type="text" name="x_level" id="x_level" size="30" value="<?php echo $products->level->EditValue ?>"<?php echo $products->level->EditAttributes() ?>>
+</span><?php echo $products->level->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->image->Visible) { // image ?>
+	<tr<?php echo $products->image->RowAttributes ?>>
+		<td<?php echo $products->image->CellAttributes() ?>>
+<input type="checkbox" name="u_image" id="u_image" value="1"<?php echo ($products->image->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->image->CellAttributes() ?>>image</td>
+		<td<?php echo $products->image->CellAttributes() ?>><span id="el_image">
+<div id="old_x_image">
+<?php if ($products->image->HrefValue <> "") { ?>
+<?php if (!is_null($products->image->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image->Upload->DbValue ?>" border=0<?php echo $products->image->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } else { ?>
+<?php if (!is_null($products->image->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image->Upload->DbValue ?>" border=0<?php echo $products->image->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } ?>
+</div>
+<div id="new_x_image">
+<?php if (!is_null($products->image->Upload->DbValue)) { ?>
+<input type="radio" name="a_image" id="a_image" value="1" checked="checked">Keep&nbsp;
+<input type="radio" name="a_image" id="a_image" value="2" disabled="disabled">Remove&nbsp;
+<input type="radio" name="a_image" id="a_image" value="3">Replace<br>
+<?php } else { ?>
+<input type="hidden" name="a_image" id="a_image" value="3">
+<?php } ?>
+<input type="file" name="x_image" id="x_image" size="30" onchange="if (this.form.a_image[2]) this.form.a_image[2].checked=true;"<?php echo $products->image->EditAttributes() ?>>
+</div>
+</span><?php echo $products->image->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->image2->Visible) { // image2 ?>
+	<tr<?php echo $products->image2->RowAttributes ?>>
+		<td<?php echo $products->image2->CellAttributes() ?>>
+<input type="checkbox" name="u_image2" id="u_image2" value="1"<?php echo ($products->image2->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->image2->CellAttributes() ?>>image 2</td>
+		<td<?php echo $products->image2->CellAttributes() ?>><span id="el_image2">
+<div id="old_x_image2">
+<?php if ($products->image2->HrefValue <> "") { ?>
+<?php if (!is_null($products->image2->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image2->Upload->DbValue ?>" border=0<?php echo $products->image2->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } else { ?>
+<?php if (!is_null($products->image2->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image2->Upload->DbValue ?>" border=0<?php echo $products->image2->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } ?>
+</div>
+<div id="new_x_image2">
+<?php if (!is_null($products->image2->Upload->DbValue)) { ?>
+<input type="radio" name="a_image2" id="a_image2" value="1" checked="checked">Keep&nbsp;
+<input type="radio" name="a_image2" id="a_image2" value="2" disabled="disabled">Remove&nbsp;
+<input type="radio" name="a_image2" id="a_image2" value="3">Replace<br>
+<?php } else { ?>
+<input type="hidden" name="a_image2" id="a_image2" value="3">
+<?php } ?>
+<input type="file" name="x_image2" id="x_image2" size="30" onchange="if (this.form.a_image2[2]) this.form.a_image2[2].checked=true;"<?php echo $products->image2->EditAttributes() ?>>
+</div>
+</span><?php echo $products->image2->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->image3->Visible) { // image3 ?>
+	<tr<?php echo $products->image3->RowAttributes ?>>
+		<td<?php echo $products->image3->CellAttributes() ?>>
+<input type="checkbox" name="u_image3" id="u_image3" value="1"<?php echo ($products->image3->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->image3->CellAttributes() ?>>image 3</td>
+		<td<?php echo $products->image3->CellAttributes() ?>><span id="el_image3">
+<div id="old_x_image3">
+<?php if ($products->image3->HrefValue <> "") { ?>
+<?php if (!is_null($products->image3->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image3->Upload->DbValue ?>" border=0<?php echo $products->image3->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } else { ?>
+<?php if (!is_null($products->image3->Upload->DbValue)) { ?>
+<img src="<?php echo ew_UploadPathEx(FALSE, "../images/") . $products->image3->Upload->DbValue ?>" border=0<?php echo $products->image3->ViewAttributes() ?>>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } ?>
+</div>
+<div id="new_x_image3">
+<?php if (!is_null($products->image3->Upload->DbValue)) { ?>
+<input type="radio" name="a_image3" id="a_image3" value="1" checked="checked">Keep&nbsp;
+<input type="radio" name="a_image3" id="a_image3" value="2" disabled="disabled">Remove&nbsp;
+<input type="radio" name="a_image3" id="a_image3" value="3">Replace<br>
+<?php } else { ?>
+<input type="hidden" name="a_image3" id="a_image3" value="3">
+<?php } ?>
+<input type="file" name="x_image3" id="x_image3" size="30" onchange="if (this.form.a_image3[2]) this.form.a_image3[2].checked=true;"<?php echo $products->image3->EditAttributes() ?>>
+</div>
+</span><?php echo $products->image3->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->description->Visible) { // description ?>
+	<tr<?php echo $products->description->RowAttributes ?>>
+		<td<?php echo $products->description->CellAttributes() ?>>
+<input type="checkbox" name="u_description" id="u_description" value="1"<?php echo ($products->description->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->description->CellAttributes() ?>>description</td>
+		<td<?php echo $products->description->CellAttributes() ?>><span id="el_description">
+<textarea name="x_description" id="x_description" cols="40" rows="10"<?php echo $products->description->EditAttributes() ?>><?php echo $products->description->EditValue ?></textarea>
+<script type="text/javascript">
+<!--
+ew_DHTMLEditors.push(new ew_DHTMLEditor("x_description", function() {
+	var sBasePath = 'fckeditor/';
+	var oFCKeditor = new FCKeditor('x_description', 40*_width_multiplier, 10*_height_multiplier);
+	oFCKeditor.BasePath = sBasePath;
+	oFCKeditor.ReplaceTextarea();
+	this.active = true;
+}));
+-->
+</script>
+</span><?php echo $products->description->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->description_arabic->Visible) { // description_arabic ?>
+	<tr<?php echo $products->description_arabic->RowAttributes ?>>
+		<td<?php echo $products->description_arabic->CellAttributes() ?>>
+<input type="checkbox" name="u_description_arabic" id="u_description_arabic" value="1"<?php echo ($products->description_arabic->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->description_arabic->CellAttributes() ?>>description arabic</td>
+		<td<?php echo $products->description_arabic->CellAttributes() ?>><span id="el_description_arabic">
+<textarea name="x_description_arabic" id="x_description_arabic" cols="40" rows="10"<?php echo $products->description_arabic->EditAttributes() ?>><?php echo $products->description_arabic->EditValue ?></textarea>
+<script type="text/javascript">
+<!--
+ew_DHTMLEditors.push(new ew_DHTMLEditor("x_description_arabic", function() {
+	var sBasePath = 'fckeditor/';
+	var oFCKeditor = new FCKeditor('x_description_arabic', 40*_width_multiplier, 10*_height_multiplier);
+	oFCKeditor.BasePath = sBasePath;
+	oFCKeditor.ReplaceTextarea();
+	this.active = true;
+}));
+-->
+</script>
+</span><?php echo $products->description_arabic->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->video->Visible) { // video ?>
+	<tr<?php echo $products->video->RowAttributes ?>>
+		<td<?php echo $products->video->CellAttributes() ?>>
+<input type="checkbox" name="u_video" id="u_video" value="1"<?php echo ($products->video->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->video->CellAttributes() ?>>video</td>
+		<td<?php echo $products->video->CellAttributes() ?>><span id="el_video">
+<input type="text" name="x_video" id="x_video" size="30" maxlength="150" value="<?php echo $products->video->EditValue ?>"<?php echo $products->video->EditAttributes() ?>>
+</span><?php echo $products->video->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->file->Visible) { // file ?>
+	<tr<?php echo $products->file->RowAttributes ?>>
+		<td<?php echo $products->file->CellAttributes() ?>>
+<input type="checkbox" name="u_file" id="u_file" value="1"<?php echo ($products->file->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->file->CellAttributes() ?>>file</td>
+		<td<?php echo $products->file->CellAttributes() ?>><span id="el_file">
+<div id="old_x_file">
+<?php if ($products->file->HrefValue <> "") { ?>
+<?php if (!is_null($products->file->Upload->DbValue)) { ?>
+<a href="<?php echo $products->file->HrefValue ?>"><?php echo $products->file->EditValue ?></a>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } else { ?>
+<?php if (!is_null($products->file->Upload->DbValue)) { ?>
+<?php echo $products->file->EditValue ?>
+<?php } elseif (!in_array($products->CurrentAction, array("I", "edit", "gridedit"))) { ?>	
+&nbsp;
+<?php } ?>
+<?php } ?>
+</div>
+<div id="new_x_file">
+<?php if (!is_null($products->file->Upload->DbValue)) { ?>
+<input type="radio" name="a_file" id="a_file" value="1" checked="checked">Keep&nbsp;
+<input type="radio" name="a_file" id="a_file" value="2">Remove&nbsp;
+<input type="radio" name="a_file" id="a_file" value="3">Replace<br>
+<?php } else { ?>
+<input type="hidden" name="a_file" id="a_file" value="3">
+<?php } ?>
+<input type="file" name="x_file" id="x_file" size="30" onchange="if (this.form.a_file[2]) this.form.a_file[2].checked=true;"<?php echo $products->file->EditAttributes() ?>>
+</div>
+</span><?php echo $products->file->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->special->Visible) { // special ?>
+	<tr<?php echo $products->special->RowAttributes ?>>
+		<td<?php echo $products->special->CellAttributes() ?>>
+<input type="checkbox" name="u_special" id="u_special" value="1"<?php echo ($products->special->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->special->CellAttributes() ?>>special</td>
+		<td<?php echo $products->special->CellAttributes() ?>><span id="el_special">
+<div id="tp_x_special" class="<?php echo EW_ITEM_TEMPLATE_CLASSNAME ?>"><input type="radio" name="x_special" id="x_special" value="{value}"<?php echo $products->special->EditAttributes() ?>></div>
+<div id="dsl_x_special" repeatcolumn="5">
+<?php
+$arwrk = $products->special->EditValue;
+if (is_array($arwrk)) {
+	$rowswrk = count($arwrk);
+	$emptywrk = TRUE;
+	for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+		$selwrk = (strval($products->special->CurrentValue) == strval($arwrk[$rowcntwrk][0])) ? " checked=\"checked\"" : "";
+		if ($selwrk <> "") $emptywrk = FALSE;
+
+		// Note: No spacing within the LABEL tag
+?>
+<?php echo ew_RepeatColumnTable($rowswrk, $rowcntwrk, 5, 1) ?>
+<label><input type="radio" name="x_special" id="x_special" value="<?php echo ew_HtmlEncode($arwrk[$rowcntwrk][0]) ?>"<?php echo $selwrk ?><?php echo $products->special->EditAttributes() ?>><?php echo $arwrk[$rowcntwrk][1] ?></label>
+<?php echo ew_RepeatColumnTable($rowswrk, $rowcntwrk, 5, 2) ?>
+<?php
+	}
+}
+?>
+</div>
+</span><?php echo $products->special->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->order->Visible) { // order ?>
+	<tr<?php echo $products->order->RowAttributes ?>>
+		<td<?php echo $products->order->CellAttributes() ?>>
+<input type="checkbox" name="u_order" id="u_order" value="1"<?php echo ($products->order->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->order->CellAttributes() ?>>order</td>
+		<td<?php echo $products->order->CellAttributes() ?>><span id="el_order">
+<input type="text" name="x_order" id="x_order" size="30" value="<?php echo $products->order->EditValue ?>"<?php echo $products->order->EditAttributes() ?>>
+</span><?php echo $products->order->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+<?php if ($products->active->Visible) { // active ?>
+	<tr<?php echo $products->active->RowAttributes ?>>
+		<td<?php echo $products->active->CellAttributes() ?>>
+<input type="checkbox" name="u_active" id="u_active" value="1"<?php echo ($products->active->MultiUpdate == "1") ? " checked=\"checked\"" : "" ?>>
+</td>
+		<td<?php echo $products->active->CellAttributes() ?>>active</td>
+		<td<?php echo $products->active->CellAttributes() ?>><span id="el_active">
+<div id="tp_x_active" class="<?php echo EW_ITEM_TEMPLATE_CLASSNAME ?>"><input type="radio" name="x_active" id="x_active" value="{value}"<?php echo $products->active->EditAttributes() ?>></div>
+<div id="dsl_x_active" repeatcolumn="5">
+<?php
+$arwrk = $products->active->EditValue;
+if (is_array($arwrk)) {
+	$rowswrk = count($arwrk);
+	$emptywrk = TRUE;
+	for ($rowcntwrk = 0; $rowcntwrk < $rowswrk; $rowcntwrk++) {
+		$selwrk = (strval($products->active->CurrentValue) == strval($arwrk[$rowcntwrk][0])) ? " checked=\"checked\"" : "";
+		if ($selwrk <> "") $emptywrk = FALSE;
+
+		// Note: No spacing within the LABEL tag
+?>
+<?php echo ew_RepeatColumnTable($rowswrk, $rowcntwrk, 5, 1) ?>
+<label><input type="radio" name="x_active" id="x_active" value="<?php echo ew_HtmlEncode($arwrk[$rowcntwrk][0]) ?>"<?php echo $selwrk ?><?php echo $products->active->EditAttributes() ?>><?php echo $arwrk[$rowcntwrk][1] ?></label>
+<?php echo ew_RepeatColumnTable($rowswrk, $rowcntwrk, 5, 2) ?>
+<?php
+	}
+}
+?>
+</div>
+</span><?php echo $products->active->CustomMsg ?></td>
+	</tr>
+<?php } ?>
+</table>
+</div>
+</td></tr></table>
+<p>
+<input type="button" name="btnAction" id="btnAction" value="  Update  " onclick="ew_SubmitForm(products_update, this.form);">
+</form>
+<script type="text/javascript">
+<!--
+ew_CreateEditor();  // Create DHTML editor(s)
+
+//-->
+</script>
+<script language="JavaScript" type="text/javascript">
+<!--
+
+// Write your table-specific startup script here
+// document.write("page loaded");
+//-->
+
+</script>
+<?php include "footer.php" ?>
+<?php
+$products_update->Page_Terminate();
+?>
+<?php
+
+//
+// Page Class
+//
+class cproducts_update {
+
+	// Page ID
+	var $PageID = 'update';
+
+	// Table Name
+	var $TableName = 'products';
+
+	// Page Object Name
+	var $PageObjName = 'products_update';
+
+	// Page Name
+	function PageName() {
+		return ew_CurrentPage();
+	}
+
+	// Page Url
+	function PageUrl() {
+		$PageUrl = ew_CurrentPage() . "?";
+		global $products;
+		if ($products->UseTokenInUrl) $PageUrl .= "t=" . $products->TableVar . "&"; // add page token
+		return $PageUrl;
+	}
+
+	// Message
+	function getMessage() {
+		return @$_SESSION[EW_SESSION_MESSAGE];
+	}
+
+	function setMessage($v) {
+		if (@$_SESSION[EW_SESSION_MESSAGE] <> "") { // Append
+			$_SESSION[EW_SESSION_MESSAGE] .= "<br>" . $v;
+		} else {
+			$_SESSION[EW_SESSION_MESSAGE] = $v;
+		}
+	}
+
+	// Show Message
+	function ShowMessage() {
+		if ($this->getMessage() <> "") { // Message in Session, display
+			echo "<p><span class=\"ewMessage\">" . $this->getMessage() . "</span></p>";
+			$_SESSION[EW_SESSION_MESSAGE] = ""; // Clear message in Session
+		}
+	}
+
+	// Validate Page request
+	function IsPageRequest() {
+		global $objForm, $products;
+		if ($products->UseTokenInUrl) {
+
+			//IsPageRequest = False
+			if ($objForm)
+				return ($products->TableVar == $objForm->GetValue("t"));
+			if (@$_GET["t"] <> "")
+				return ($products->TableVar == $_GET["t"]);
+		} else {
+			return TRUE;
+		}
+	}
+
+	//
+	//  Class initialize
+	//  - init objects
+	//  - open connection
+	//
+	function cproducts_update() {
+		global $conn;
+
+		// Initialize table object
+		$GLOBALS["products"] = new cproducts();
+
+		// Initialize other table object
+		$GLOBALS['users'] = new cusers();
+
+		// Intialize page id (for backward compatibility)
+		if (!defined("EW_PAGE_ID"))
+			define("EW_PAGE_ID", 'update', TRUE);
+
+		// Initialize table name (for backward compatibility)
+		if (!defined("EW_TABLE_NAME"))
+			define("EW_TABLE_NAME", 'products', TRUE);
+
+		// Open connection to the database
+		$conn = ew_Connect();
+	}
+
+	// 
+	//  Page_Init
+	//
+	function Page_Init() {
+		global $gsExport, $gsExportFile, $products;
+		global $Security;
+		$Security = new cAdvancedSecurity();
+		if (!$Security->IsLoggedIn()) $Security->AutoLogin();
+		if (!$Security->IsLoggedIn()) {
+			$Security->SaveLastUrl();
+			$this->Page_Terminate("login.php");
+		}
+
+		// Global page loading event (in userfn6.php)
+		Page_Loading();
+
+		// Page load event, used in current page
+		$this->Page_Load();
+	}
+
+	//
+	//  Page_Terminate
+	//  - called when exit page
+	//  - if URL specified, redirect to the URL
+	//
+	function Page_Terminate($url = "") {
+		global $conn;
+
+		// Page unload event, used in current page
+		$this->Page_Unload();
+
+		// Global page unloaded event (in userfn*.php)
+		Page_Unloaded();
+
+		 // Close Connection
+		$conn->Close();
+
+		// Go to URL if specified
+		if ($url <> "") {
+			ob_end_clean();
+			header("Location: $url");
+		}
+		exit();
+	}
+	var $nKeySelected;
+	var $arRecKeys;
+	var $sDisabled;
+
+	//
+	// Page main processing
+	//
+	function Page_Main() {
+		global $objForm, $gsFormError, $products;
+
+		// Try to load keys from list form
+		$this->nKeySelected = 0;
+		if (ew_IsHttpPost()) {
+			if (isset($_POST["key_m"])) { // Key count > 0
+				$this->nKeySelected = count($_POST["key_m"]); // Get number of keys
+				$this->arRecKeys = ew_StripSlashes($_POST["key_m"]);
+				$this->LoadMultiUpdateValues(); // Load initial values to form
+			}
+		}
+
+		// Try to load key from update form
+		if ($this->nKeySelected == 0) {
+			$this->arRecKeys = array();
+
+			// Create form object
+			$objForm = new cFormObj();
+			if (@$_POST["a_update"] <> "") {
+
+				// Get action
+				$products->CurrentAction = $_POST["a_update"];
+
+				// Get record keys
+				$sKey = @$_POST["k" . strval($this->nKeySelected+1) . "_key"];
+				while ($sKey <> "") {
+					$this->arRecKeys[$this->nKeySelected] = ew_StripSlashes($sKey);
+					$this->nKeySelected++;
+					$sKey = @$_POST["k" . strval($this->nKeySelected+1) . "_key"];
+				}
+				$this->GetUploadFiles(); // Get upload files
+				$this->LoadFormValues(); // Get form values
+
+				// Validate Form
+				if (!$this->ValidateForm()) {
+					$products->CurrentAction = "I"; // Form error, reset action
+					$this->setMessage($gsFormError);
+				}
+			}
+		}
+		if ($this->nKeySelected <= 0)
+			$this->Page_Terminate("productslist.php"); // No records selected, return to list
+		switch ($products->CurrentAction) {
+			case "U": // Update
+				if ($this->UpdateRows()) { // Update Records based on key
+					$this->setMessage("Update succeeded"); // Set update success message
+					$this->Page_Terminate($products->getReturnUrl()); // Return to caller
+				} else {
+					$this->RestoreFormValues(); // Restore form values
+				}
+		}
+
+		// Render row
+		$products->RowType = EW_ROWTYPE_EDIT; // Render edit
+		$this->RenderRow();
+	}
+
+	// Load initial values to form if field values are identical in all selected records
+	function LoadMultiUpdateValues() {
+		global $products;
+		$products->CurrentFilter = $this->BuildKeyFilter();
+
+		// Load recordset
+		$rs = $this->LoadRecordset();
+		$i = 1;
+		while (!$rs->EOF) {
+			if ($i == 1) {
+				$products->name->setDbValue($rs->fields('name'));
+				$products->name_arabic->setDbValue($rs->fields('name_arabic'));
+				$products->level->setDbValue($rs->fields('level'));
+				$products->description->setDbValue($rs->fields('description'));
+				$products->description_arabic->setDbValue($rs->fields('description_arabic'));
+				$products->video->setDbValue($rs->fields('video'));
+				$products->special->setDbValue($rs->fields('special'));
+				$products->order->setDbValue($rs->fields('order'));
+				$products->active->setDbValue($rs->fields('active'));
+			} else {
+				if (!ew_CompareValue($products->name->DbValue, $rs->fields('name')))
+					$products->name->CurrentValue = NULL;
+				if (!ew_CompareValue($products->name_arabic->DbValue, $rs->fields('name_arabic')))
+					$products->name_arabic->CurrentValue = NULL;
+				if (!ew_CompareValue($products->level->DbValue, $rs->fields('level')))
+					$products->level->CurrentValue = NULL;
+				if (!ew_CompareValue($products->description->DbValue, $rs->fields('description')))
+					$products->description->CurrentValue = NULL;
+				if (!ew_CompareValue($products->description_arabic->DbValue, $rs->fields('description_arabic')))
+					$products->description_arabic->CurrentValue = NULL;
+				if (!ew_CompareValue($products->video->DbValue, $rs->fields('video')))
+					$products->video->CurrentValue = NULL;
+				if (!ew_CompareValue($products->special->DbValue, $rs->fields('special')))
+					$products->special->CurrentValue = NULL;
+				if (!ew_CompareValue($products->order->DbValue, $rs->fields('order')))
+					$products->order->CurrentValue = NULL;
+				if (!ew_CompareValue($products->active->DbValue, $rs->fields('active')))
+					$products->active->CurrentValue = NULL;
+			}
+			$i++;
+			$rs->MoveNext();
+		}
+		$rs->Close();
+	}
+
+	// Build filter for all keys
+	function BuildKeyFilter() {
+		global $products;
+		$sWrkFilter = "";
+		foreach ($this->arRecKeys as $sKey) {
+			$sKey = trim($sKey);
+			if ($this->SetupKeyValues($sKey)) {
+				$sFilter = $products->KeyFilter();
+				if ($sWrkFilter <> "") $sWrkFilter .= " OR ";
+				$sWrkFilter .= $sFilter;
+			} else {
+				$sWrkFilter = "0=1";
+				break;
+			}
+		}
+		return $sWrkFilter;
+	}
+
+	// Set up key value
+	function SetupKeyValues($key) {
+		global $products;
+		$sKeyFld = $key;
+		if (!is_numeric($sKeyFld))
+			return FALSE;
+		$products->id->CurrentValue = $sKeyFld;
+		return TRUE;
+	}
+
+	// Update all selected rows
+	function UpdateRows() {
+		global $conn, $products;
+		$conn->BeginTrans();
+
+		// Get old recordset
+		$products->CurrentFilter = $this->BuildKeyFilter();
+		$sSql = $products->SQL();
+		$rsold = $conn->Execute($sSql);
+
+		// Update all rows
+		$sKey = "";
+		foreach ($this->arRecKeys as $sThisKey) {
+			$sThisKey = trim($sThisKey);
+			if ($this->SetupKeyValues($sThisKey)) {
+				$products->SendEmail = FALSE; // Do not send email on update success
+				$UpdateRows = $this->EditRow(); // Update this row
+			} else {
+				$UpdateRows = FALSE;
+			}
+			if (!$UpdateRows)
+				return; // Update failed
+			if ($sKey <> "") $sKey .= ", ";
+			$sKey .= $sThisKey;
+		}
+
+		// Field image
+		$products->image->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field image2
+		$products->image2->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field image3
+		$products->image3->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field file
+		$products->file->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Check if all rows updated
+		if ($UpdateRows) {
+			$conn->CommitTrans(); // Commit transaction
+
+			// Get new recordset
+			$rsnew = $conn->Execute($sSql);
+		} else {
+			$conn->RollbackTrans(); // Rollback transaction
+		}
+		return $UpdateRows;
+	}
+
+	// Get upload files
+	function GetUploadFiles() {
+		global $objForm, $products;
+
+		// Get upload data
+			$products->image->Upload->Index = $objForm->Index;
+			if ($products->image->Upload->UploadFile()) {
+
+				// No action required
+			} else {
+				echo $products->image->Upload->Message;
+				$this->Page_Terminate();
+				exit();
+			}
+		$products->image->MultiUpdate = $objForm->GetValue("u_image");
+			$products->image2->Upload->Index = $objForm->Index;
+			if ($products->image2->Upload->UploadFile()) {
+
+				// No action required
+			} else {
+				echo $products->image2->Upload->Message;
+				$this->Page_Terminate();
+				exit();
+			}
+		$products->image2->MultiUpdate = $objForm->GetValue("u_image2");
+			$products->image3->Upload->Index = $objForm->Index;
+			if ($products->image3->Upload->UploadFile()) {
+
+				// No action required
+			} else {
+				echo $products->image3->Upload->Message;
+				$this->Page_Terminate();
+				exit();
+			}
+		$products->image3->MultiUpdate = $objForm->GetValue("u_image3");
+			$products->file->Upload->Index = $objForm->Index;
+			if ($products->file->Upload->UploadFile()) {
+
+				// No action required
+			} else {
+				echo $products->file->Upload->Message;
+				$this->Page_Terminate();
+				exit();
+			}
+		$products->file->MultiUpdate = $objForm->GetValue("u_file");
+	}
+
+	// Load form values
+	function LoadFormValues() {
+
+		// Load from form
+		global $objForm, $products;
+		$products->name->setFormValue($objForm->GetValue("x_name"));
+		$products->name->MultiUpdate = $objForm->GetValue("u_name");
+		$products->name_arabic->setFormValue($objForm->GetValue("x_name_arabic"));
+		$products->name_arabic->MultiUpdate = $objForm->GetValue("u_name_arabic");
+		$products->level->setFormValue($objForm->GetValue("x_level"));
+		$products->level->MultiUpdate = $objForm->GetValue("u_level");
+		$products->description->setFormValue($objForm->GetValue("x_description"));
+		$products->description->MultiUpdate = $objForm->GetValue("u_description");
+		$products->description_arabic->setFormValue($objForm->GetValue("x_description_arabic"));
+		$products->description_arabic->MultiUpdate = $objForm->GetValue("u_description_arabic");
+		$products->video->setFormValue($objForm->GetValue("x_video"));
+		$products->video->MultiUpdate = $objForm->GetValue("u_video");
+		$products->special->setFormValue($objForm->GetValue("x_special"));
+		$products->special->MultiUpdate = $objForm->GetValue("u_special");
+		$products->order->setFormValue($objForm->GetValue("x_order"));
+		$products->order->MultiUpdate = $objForm->GetValue("u_order");
+		$products->active->setFormValue($objForm->GetValue("x_active"));
+		$products->active->MultiUpdate = $objForm->GetValue("u_active");
+		$products->id->setFormValue($objForm->GetValue("x_id"));
+	}
+
+	// Restore form values
+	function RestoreFormValues() {
+		global $products;
+		$products->id->CurrentValue = $products->id->FormValue;
+		$products->name->CurrentValue = $products->name->FormValue;
+		$products->name_arabic->CurrentValue = $products->name_arabic->FormValue;
+		$products->level->CurrentValue = $products->level->FormValue;
+		$products->description->CurrentValue = $products->description->FormValue;
+		$products->description_arabic->CurrentValue = $products->description_arabic->FormValue;
+		$products->video->CurrentValue = $products->video->FormValue;
+		$products->special->CurrentValue = $products->special->FormValue;
+		$products->order->CurrentValue = $products->order->FormValue;
+		$products->active->CurrentValue = $products->active->FormValue;
+	}
+
+	// Load recordset
+	function LoadRecordset($offset = -1, $rowcnt = -1) {
+		global $conn, $products;
+
+		// Call Recordset Selecting event
+		$products->Recordset_Selecting($products->CurrentFilter);
+
+		// Load list page SQL
+		$sSql = $products->SelectSQL();
+		if ($offset > -1 && $rowcnt > -1) $sSql .= " LIMIT $offset, $rowcnt";
+
+		// Load recordset
+		$conn->raiseErrorFn = 'ew_ErrorFn';	
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+
+		// Call Recordset Selected event
+		$products->Recordset_Selected($rs);
+		return $rs;
+	}
+
+	// Render row values based on field settings
+	function RenderRow() {
+		global $conn, $Security, $products;
+
+		// Call Row_Rendering event
+		$products->Row_Rendering();
+
+		// Common render codes for all row types
+		// name
+
+		$products->name->CellCssStyle = "";
+		$products->name->CellCssClass = "";
+
+		// name_arabic
+		$products->name_arabic->CellCssStyle = "";
+		$products->name_arabic->CellCssClass = "";
+
+		// level
+		$products->level->CellCssStyle = "";
+		$products->level->CellCssClass = "";
+
+		// image
+		$products->image->CellCssStyle = "";
+		$products->image->CellCssClass = "";
+
+		// image2
+		$products->image2->CellCssStyle = "";
+		$products->image2->CellCssClass = "";
+
+		// image3
+		$products->image3->CellCssStyle = "";
+		$products->image3->CellCssClass = "";
+
+		// description
+		$products->description->CellCssStyle = "";
+		$products->description->CellCssClass = "";
+
+		// description_arabic
+		$products->description_arabic->CellCssStyle = "";
+		$products->description_arabic->CellCssClass = "";
+
+		// video
+		$products->video->CellCssStyle = "";
+		$products->video->CellCssClass = "";
+
+		// file
+		$products->file->CellCssStyle = "";
+		$products->file->CellCssClass = "";
+
+		// special
+		$products->special->CellCssStyle = "";
+		$products->special->CellCssClass = "";
+
+		// order
+		$products->order->CellCssStyle = "";
+		$products->order->CellCssClass = "";
+
+		// active
+		$products->active->CellCssStyle = "";
+		$products->active->CellCssClass = "";
+		if ($products->RowType == EW_ROWTYPE_VIEW) { // View row
+
+			// id
+			$products->id->ViewValue = $products->id->CurrentValue;
+			$products->id->CssStyle = "";
+			$products->id->CssClass = "";
+			$products->id->ViewCustomAttributes = "";
+
+			// name
+			$products->name->ViewValue = $products->name->CurrentValue;
+			$products->name->CssStyle = "";
+			$products->name->CssClass = "";
+			$products->name->ViewCustomAttributes = "";
+
+			// name_arabic
+			$products->name_arabic->ViewValue = $products->name_arabic->CurrentValue;
+			$products->name_arabic->CssStyle = "";
+			$products->name_arabic->CssClass = "";
+			$products->name_arabic->ViewCustomAttributes = "";
+
+			// level
+			$products->level->ViewValue = $products->level->CurrentValue;
+			$products->level->CssStyle = "";
+			$products->level->CssClass = "";
+			$products->level->ViewCustomAttributes = "";
+
+			// image
+			if (!is_null($products->image->Upload->DbValue)) {
+				$products->image->ViewValue = $products->image->Upload->DbValue;
+				$products->image->ImageWidth = 100;
+				$products->image->ImageHeight = 0;
+				$products->image->ImageAlt = "";
+			} else {
+				$products->image->ViewValue = "";
+			}
+			$products->image->CssStyle = "";
+			$products->image->CssClass = "";
+			$products->image->ViewCustomAttributes = "";
+
+			// image2
+			if (!is_null($products->image2->Upload->DbValue)) {
+				$products->image2->ViewValue = $products->image2->Upload->DbValue;
+				$products->image2->ImageWidth = 100;
+				$products->image2->ImageHeight = 0;
+				$products->image2->ImageAlt = "";
+			} else {
+				$products->image2->ViewValue = "";
+			}
+			$products->image2->CssStyle = "";
+			$products->image2->CssClass = "";
+			$products->image2->ViewCustomAttributes = "";
+
+			// image3
+			if (!is_null($products->image3->Upload->DbValue)) {
+				$products->image3->ViewValue = $products->image3->Upload->DbValue;
+				$products->image3->ImageWidth = 100;
+				$products->image3->ImageHeight = 0;
+				$products->image3->ImageAlt = "";
+			} else {
+				$products->image3->ViewValue = "";
+			}
+			$products->image3->CssStyle = "";
+			$products->image3->CssClass = "";
+			$products->image3->ViewCustomAttributes = "";
+
+			// description
+			$products->description->ViewValue = $products->description->CurrentValue;
+			$products->description->CssStyle = "";
+			$products->description->CssClass = "";
+			$products->description->ViewCustomAttributes = "";
+
+			// description_arabic
+			$products->description_arabic->ViewValue = $products->description_arabic->CurrentValue;
+			$products->description_arabic->CssStyle = "";
+			$products->description_arabic->CssClass = "";
+			$products->description_arabic->ViewCustomAttributes = "";
+
+			// video
+			$products->video->ViewValue = $products->video->CurrentValue;
+			$products->video->CssStyle = "";
+			$products->video->CssClass = "";
+			$products->video->ViewCustomAttributes = "";
+
+			// file
+			if (!is_null($products->file->Upload->DbValue)) {
+				$products->file->ViewValue = $products->file->Upload->DbValue;
+			} else {
+				$products->file->ViewValue = "";
+			}
+			$products->file->CssStyle = "";
+			$products->file->CssClass = "";
+			$products->file->ViewCustomAttributes = "";
+
+			// special
+			if (strval($products->special->CurrentValue) <> "") {
+				switch ($products->special->CurrentValue) {
+					case "0":
+						$products->special->ViewValue = "No";
+						break;
+					case "1":
+						$products->special->ViewValue = "Yes";
+						break;
+					default:
+						$products->special->ViewValue = $products->special->CurrentValue;
+				}
+			} else {
+				$products->special->ViewValue = NULL;
+			}
+			$products->special->CssStyle = "";
+			$products->special->CssClass = "";
+			$products->special->ViewCustomAttributes = "";
+
+			// order
+			$products->order->ViewValue = $products->order->CurrentValue;
+			$products->order->CssStyle = "";
+			$products->order->CssClass = "";
+			$products->order->ViewCustomAttributes = "";
+
+			// active
+			if (strval($products->active->CurrentValue) <> "") {
+				switch ($products->active->CurrentValue) {
+					case "0":
+						$products->active->ViewValue = "No";
+						break;
+					case "1":
+						$products->active->ViewValue = "Yes";
+						break;
+					default:
+						$products->active->ViewValue = $products->active->CurrentValue;
+				}
+			} else {
+				$products->active->ViewValue = NULL;
+			}
+			$products->active->CssStyle = "";
+			$products->active->CssClass = "";
+			$products->active->ViewCustomAttributes = "";
+
+			// name
+			$products->name->HrefValue = "";
+
+			// name_arabic
+			$products->name_arabic->HrefValue = "";
+
+			// level
+			$products->level->HrefValue = "";
+
+			// image
+			$products->image->HrefValue = "";
+
+			// image2
+			$products->image2->HrefValue = "";
+
+			// image3
+			$products->image3->HrefValue = "";
+
+			// description
+			$products->description->HrefValue = "";
+
+			// description_arabic
+			$products->description_arabic->HrefValue = "";
+
+			// video
+			$products->video->HrefValue = "";
+
+			// file
+			if (!is_null($products->file->Upload->DbValue)) {
+				$products->file->HrefValue = ew_UploadPathEx(FALSE, "../images/") . ((!empty($products->file->ViewValue)) ? $products->file->ViewValue : $products->file->CurrentValue);
+				if ($products->Export <> "") $products->file->HrefValue = ew_ConvertFullUrl($products->file->HrefValue);
+			} else {
+				$products->file->HrefValue = "";
+			}
+
+			// special
+			$products->special->HrefValue = "";
+
+			// order
+			$products->order->HrefValue = "";
+
+			// active
+			$products->active->HrefValue = "";
+		} elseif ($products->RowType == EW_ROWTYPE_EDIT) { // Edit row
+
+			// name
+			$products->name->EditCustomAttributes = "";
+			$products->name->EditValue = ew_HtmlEncode($products->name->CurrentValue);
+
+			// name_arabic
+			$products->name_arabic->EditCustomAttributes = "";
+			$products->name_arabic->EditValue = ew_HtmlEncode($products->name_arabic->CurrentValue);
+
+			// level
+			$products->level->EditCustomAttributes = "";
+			$products->level->EditValue = ew_HtmlEncode($products->level->CurrentValue);
+
+			// image
+			$products->image->EditCustomAttributes = "";
+			if (!is_null($products->image->Upload->DbValue)) {
+				$products->image->EditValue = $products->image->Upload->DbValue;
+				$products->image->ImageWidth = 100;
+				$products->image->ImageHeight = 0;
+				$products->image->ImageAlt = "";
+			} else {
+				$products->image->EditValue = "";
+			}
+
+			// image2
+			$products->image2->EditCustomAttributes = "";
+			if (!is_null($products->image2->Upload->DbValue)) {
+				$products->image2->EditValue = $products->image2->Upload->DbValue;
+				$products->image2->ImageWidth = 100;
+				$products->image2->ImageHeight = 0;
+				$products->image2->ImageAlt = "";
+			} else {
+				$products->image2->EditValue = "";
+			}
+
+			// image3
+			$products->image3->EditCustomAttributes = "";
+			if (!is_null($products->image3->Upload->DbValue)) {
+				$products->image3->EditValue = $products->image3->Upload->DbValue;
+				$products->image3->ImageWidth = 100;
+				$products->image3->ImageHeight = 0;
+				$products->image3->ImageAlt = "";
+			} else {
+				$products->image3->EditValue = "";
+			}
+
+			// description
+			$products->description->EditCustomAttributes = "";
+			$products->description->EditValue = ew_HtmlEncode($products->description->CurrentValue);
+
+			// description_arabic
+			$products->description_arabic->EditCustomAttributes = "";
+			$products->description_arabic->EditValue = ew_HtmlEncode($products->description_arabic->CurrentValue);
+
+			// video
+			$products->video->EditCustomAttributes = "";
+			$products->video->EditValue = ew_HtmlEncode($products->video->CurrentValue);
+
+			// file
+			$products->file->EditCustomAttributes = "";
+			if (!is_null($products->file->Upload->DbValue)) {
+				$products->file->EditValue = $products->file->Upload->DbValue;
+			} else {
+				$products->file->EditValue = "";
+			}
+
+			// special
+			$products->special->EditCustomAttributes = "";
+			$arwrk = array();
+			$arwrk[] = array("0", "No");
+			$arwrk[] = array("1", "Yes");
+			$products->special->EditValue = $arwrk;
+
+			// order
+			$products->order->EditCustomAttributes = "";
+			$products->order->EditValue = ew_HtmlEncode($products->order->CurrentValue);
+
+			// active
+			$products->active->EditCustomAttributes = "";
+			$arwrk = array();
+			$arwrk[] = array("0", "No");
+			$arwrk[] = array("1", "Yes");
+			$products->active->EditValue = $arwrk;
+
+			// Edit refer script
+			// name
+
+			$products->name->HrefValue = "";
+
+			// name_arabic
+			$products->name_arabic->HrefValue = "";
+
+			// level
+			$products->level->HrefValue = "";
+
+			// image
+			$products->image->HrefValue = "";
+
+			// image2
+			$products->image2->HrefValue = "";
+
+			// image3
+			$products->image3->HrefValue = "";
+
+			// description
+			$products->description->HrefValue = "";
+
+			// description_arabic
+			$products->description_arabic->HrefValue = "";
+
+			// video
+			$products->video->HrefValue = "";
+
+			// file
+			if (!is_null($products->file->Upload->DbValue)) {
+				$products->file->HrefValue = ew_UploadPathEx(FALSE, "../images/") . ((!empty($products->file->EditValue)) ? $products->file->EditValue : $products->file->CurrentValue);
+				if ($products->Export <> "") $products->file->HrefValue = ew_ConvertFullUrl($products->file->HrefValue);
+			} else {
+				$products->file->HrefValue = "";
+			}
+
+			// special
+			$products->special->HrefValue = "";
+
+			// order
+			$products->order->HrefValue = "";
+
+			// active
+			$products->active->HrefValue = "";
+		}
+
+		// Call Row Rendered event
+		$products->Row_Rendered();
+	}
+
+	// Validate form
+	function ValidateForm() {
+		global $gsFormError, $products;
+
+		// Initialize
+		$gsFormError = "";
+		$lUpdateCnt = 0;
+		if ($products->name->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->name_arabic->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->level->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->image->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->image2->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->image3->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->description->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->description_arabic->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->video->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->file->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->special->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->order->MultiUpdate == "1") $lUpdateCnt++;
+		if ($products->active->MultiUpdate == "1") $lUpdateCnt++;
+		if ($lUpdateCnt == 0) {
+			$gsFormError = "No field selected for update";
+			return FALSE;
+		}
+		if ($products->image->MultiUpdate <> "") {
+			if (!ew_CheckFileType($products->image->Upload->FileName)) {
+				$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+				$gsFormError .= "File type is not allowed.";
+			}
+			if ($products->image->Upload->FileSize > 0 && EW_MAX_FILE_SIZE > 0) {
+				if ($products->image->Upload->FileSize > EW_MAX_FILE_SIZE)
+					$gsFormError .= str_replace("%s", EW_MAX_FILE_SIZE, "Max. file size (%s bytes) exceeded.");
+			}
+		}
+		if ($products->image2->MultiUpdate <> "") {
+			if (!ew_CheckFileType($products->image2->Upload->FileName)) {
+				$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+				$gsFormError .= "File type is not allowed.";
+			}
+			if ($products->image2->Upload->FileSize > 0 && EW_MAX_FILE_SIZE > 0) {
+				if ($products->image2->Upload->FileSize > EW_MAX_FILE_SIZE)
+					$gsFormError .= str_replace("%s", EW_MAX_FILE_SIZE, "Max. file size (%s bytes) exceeded.");
+			}
+		}
+		if ($products->image3->MultiUpdate <> "") {
+			if (!ew_CheckFileType($products->image3->Upload->FileName)) {
+				$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+				$gsFormError .= "File type is not allowed.";
+			}
+			if ($products->image3->Upload->FileSize > 0 && EW_MAX_FILE_SIZE > 0) {
+				if ($products->image3->Upload->FileSize > EW_MAX_FILE_SIZE)
+					$gsFormError .= str_replace("%s", EW_MAX_FILE_SIZE, "Max. file size (%s bytes) exceeded.");
+			}
+		}
+		if ($products->file->MultiUpdate <> "") {
+			if (!ew_CheckFileType($products->file->Upload->FileName)) {
+				$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+				$gsFormError .= "File type is not allowed.";
+			}
+			if ($products->file->Upload->FileSize > 0 && EW_MAX_FILE_SIZE > 0) {
+				if ($products->file->Upload->FileSize > EW_MAX_FILE_SIZE)
+					$gsFormError .= str_replace("%s", EW_MAX_FILE_SIZE, "Max. file size (%s bytes) exceeded.");
+			}
+		}
+
+		// Check if validation required
+		if (!EW_SERVER_VALIDATE)
+			return ($gsFormError == "");
+		if ($products->name->MultiUpdate <> "" && $products->name->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - name";
+		}
+		if ($products->name_arabic->MultiUpdate <> "" && $products->name_arabic->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - name arabic";
+		}
+		if ($products->level->MultiUpdate <> "" && $products->level->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - level";
+		}
+		if ($products->level->MultiUpdate <> "") {
+			if (!ew_CheckInteger($products->level->FormValue)) {
+				if ($gsFormError <> "") $gsFormError .= "<br>";
+				$gsFormError .= "Incorrect integer - level";
+			}
+		}
+		if ($products->image->MultiUpdate <> "" && is_null($products->image->Upload->Value)) {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - image";
+		}
+		if ($products->image2->MultiUpdate <> "" && is_null($products->image2->Upload->Value)) {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - image 2";
+		}
+		if ($products->image3->MultiUpdate <> "" && is_null($products->image3->Upload->Value)) {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - image 3";
+		}
+		if ($products->special->MultiUpdate <> "" && $products->special->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - special";
+		}
+		if ($products->order->MultiUpdate <> "" && $products->order->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - order";
+		}
+		if ($products->order->MultiUpdate <> "") {
+			if (!ew_CheckInteger($products->order->FormValue)) {
+				if ($gsFormError <> "") $gsFormError .= "<br>";
+				$gsFormError .= "Incorrect integer - order";
+			}
+		}
+		if ($products->active->MultiUpdate <> "" && $products->active->FormValue == "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= "Please enter required field - active";
+		}
+
+		// Return validate result
+		$ValidateForm = ($gsFormError == "");
+
+		// Call Form_CustomValidate event
+		$sFormCustomError = "";
+		$ValidateForm = $ValidateForm && $this->Form_CustomValidate($sFormCustomError);
+		if ($sFormCustomError <> "") {
+			$gsFormError .= ($gsFormError <> "") ? "<br>" : "";
+			$gsFormError .= $sFormCustomError;
+		}
+		return $ValidateForm;
+	}
+
+	// Update record based on key values
+	function EditRow() {
+		global $conn, $Security, $products;
+		$sFilter = $products->KeyFilter();
+		$products->CurrentFilter = $sFilter;
+		$sSql = $products->SQL();
+		$conn->raiseErrorFn = 'ew_ErrorFn';
+		$rs = $conn->Execute($sSql);
+		$conn->raiseErrorFn = '';
+		if ($rs === FALSE)
+			return FALSE;
+		if ($rs->EOF) {
+			$EditRow = FALSE; // Update Failed
+		} else {
+
+			// Save old values
+			$rsold =& $rs->fields;
+			$rsnew = array();
+
+			// Field name
+						if ($products->name->MultiUpdate == "1") {
+			$products->name->SetDbValueDef($products->name->CurrentValue, "");
+			$rsnew['name'] =& $products->name->DbValue;
+			}
+
+			// Field name_arabic
+						if ($products->name_arabic->MultiUpdate == "1") {
+			$products->name_arabic->SetDbValueDef($products->name_arabic->CurrentValue, "");
+			$rsnew['name_arabic'] =& $products->name_arabic->DbValue;
+			}
+
+			// Field level
+						if ($products->level->MultiUpdate == "1") {
+			$products->level->SetDbValueDef($products->level->CurrentValue, 0);
+			$rsnew['level'] =& $products->level->DbValue;
+			}
+
+			// Field image
+			$products->image->Upload->SaveToSession(); // Save file value to Session
+						if ($products->image->MultiUpdate == "1") {
+if ($products->image->Upload->Action == "2" || $products->image->Upload->Action == "3") { // Update/Remove
+			$products->image->Upload->DbValue = $rs->fields('image'); // Get original value
+			if (is_null($products->image->Upload->Value)) {
+				$rsnew['image'] = NULL;
+			} else {
+				if ($products->image->Upload->FileName == $products->image->Upload->DbValue) { // Upload file name same as old file name
+					$rsnew['image'] = $products->image->Upload->FileName;
+				} else {
+					$rsnew['image'] = ew_UploadFileNameEx(ew_UploadPathEx(TRUE, "../images/"), $products->image->Upload->FileName);
+				}
+			}
+			}
+}
+
+			// Field image2
+			$products->image2->Upload->SaveToSession(); // Save file value to Session
+						if ($products->image2->MultiUpdate == "1") {
+if ($products->image2->Upload->Action == "2" || $products->image2->Upload->Action == "3") { // Update/Remove
+			$products->image2->Upload->DbValue = $rs->fields('image2'); // Get original value
+			if (is_null($products->image2->Upload->Value)) {
+				$rsnew['image2'] = NULL;
+			} else {
+				if ($products->image2->Upload->FileName == $products->image2->Upload->DbValue) { // Upload file name same as old file name
+					$rsnew['image2'] = $products->image2->Upload->FileName;
+				} else {
+					$rsnew['image2'] = ew_UploadFileNameEx(ew_UploadPathEx(TRUE, "../images/"), $products->image2->Upload->FileName);
+				}
+			}
+			}
+}
+
+			// Field image3
+			$products->image3->Upload->SaveToSession(); // Save file value to Session
+						if ($products->image3->MultiUpdate == "1") {
+if ($products->image3->Upload->Action == "2" || $products->image3->Upload->Action == "3") { // Update/Remove
+			$products->image3->Upload->DbValue = $rs->fields('image3'); // Get original value
+			if (is_null($products->image3->Upload->Value)) {
+				$rsnew['image3'] = NULL;
+			} else {
+				if ($products->image3->Upload->FileName == $products->image3->Upload->DbValue) { // Upload file name same as old file name
+					$rsnew['image3'] = $products->image3->Upload->FileName;
+				} else {
+					$rsnew['image3'] = ew_UploadFileNameEx(ew_UploadPathEx(TRUE, "../images/"), $products->image3->Upload->FileName);
+				}
+			}
+			}
+}
+
+			// Field description
+						if ($products->description->MultiUpdate == "1") {
+			$products->description->SetDbValueDef($products->description->CurrentValue, NULL);
+			$rsnew['description'] =& $products->description->DbValue;
+			}
+
+			// Field description_arabic
+						if ($products->description_arabic->MultiUpdate == "1") {
+			$products->description_arabic->SetDbValueDef($products->description_arabic->CurrentValue, NULL);
+			$rsnew['description_arabic'] =& $products->description_arabic->DbValue;
+			}
+
+			// Field video
+						if ($products->video->MultiUpdate == "1") {
+			$products->video->SetDbValueDef($products->video->CurrentValue, NULL);
+			$rsnew['video'] =& $products->video->DbValue;
+			}
+
+			// Field file
+			$products->file->Upload->SaveToSession(); // Save file value to Session
+						if ($products->file->MultiUpdate == "1") {
+if ($products->file->Upload->Action == "2" || $products->file->Upload->Action == "3") { // Update/Remove
+			$products->file->Upload->DbValue = $rs->fields('file'); // Get original value
+			if (is_null($products->file->Upload->Value)) {
+				$rsnew['file'] = NULL;
+			} else {
+				if ($products->file->Upload->FileName == $products->file->Upload->DbValue) { // Upload file name same as old file name
+					$rsnew['file'] = $products->file->Upload->FileName;
+				} else {
+					$rsnew['file'] = ew_UploadFileNameEx(ew_UploadPathEx(TRUE, "../images/"), $products->file->Upload->FileName);
+				}
+			}
+			}
+}
+
+			// Field special
+						if ($products->special->MultiUpdate == "1") {
+			$products->special->SetDbValueDef($products->special->CurrentValue, 0);
+			$rsnew['special'] =& $products->special->DbValue;
+			}
+
+			// Field order
+						if ($products->order->MultiUpdate == "1") {
+			$products->order->SetDbValueDef($products->order->CurrentValue, 0);
+			$rsnew['order'] =& $products->order->DbValue;
+			}
+
+			// Field active
+						if ($products->active->MultiUpdate == "1") {
+			$products->active->SetDbValueDef($products->active->CurrentValue, 0);
+			$rsnew['active'] =& $products->active->DbValue;
+			}
+
+			// Call Row Updating event
+			$bUpdateRow = $products->Row_Updating($rsold, $rsnew);
+			if ($bUpdateRow) {
+
+			// Field image
+			if (!is_null($products->image->Upload->Value)) {
+				if ($products->image->Upload->FileName == $products->image->Upload->DbValue) { // Overwrite if same file name
+					$products->image->Upload->SaveToFile("../images/", $rsnew['image'], TRUE);
+					$products->image->Upload->DbValue = ""; // No need to delete any more
+				} else {
+					$products->image->Upload->SaveToFile("../images/", $rsnew['image'], FALSE);
+				}
+			}
+			if ($products->image->Upload->Action == "2" || $products->image->Upload->Action == "3") { // Update/Remove
+				if ($products->image->Upload->DbValue <> "")
+					@unlink(ew_UploadPathEx(TRUE, "../images/") . $products->image->Upload->DbValue);
+			}
+
+			// Field image2
+			if (!is_null($products->image2->Upload->Value)) {
+				if ($products->image2->Upload->FileName == $products->image2->Upload->DbValue) { // Overwrite if same file name
+					$products->image2->Upload->SaveToFile("../images/", $rsnew['image2'], TRUE);
+					$products->image2->Upload->DbValue = ""; // No need to delete any more
+				} else {
+					$products->image2->Upload->SaveToFile("../images/", $rsnew['image2'], FALSE);
+				}
+			}
+			if ($products->image2->Upload->Action == "2" || $products->image2->Upload->Action == "3") { // Update/Remove
+				if ($products->image2->Upload->DbValue <> "")
+					@unlink(ew_UploadPathEx(TRUE, "../images/") . $products->image2->Upload->DbValue);
+			}
+
+			// Field image3
+			if (!is_null($products->image3->Upload->Value)) {
+				if ($products->image3->Upload->FileName == $products->image3->Upload->DbValue) { // Overwrite if same file name
+					$products->image3->Upload->SaveToFile("../images/", $rsnew['image3'], TRUE);
+					$products->image3->Upload->DbValue = ""; // No need to delete any more
+				} else {
+					$products->image3->Upload->SaveToFile("../images/", $rsnew['image3'], FALSE);
+				}
+			}
+			if ($products->image3->Upload->Action == "2" || $products->image3->Upload->Action == "3") { // Update/Remove
+				if ($products->image3->Upload->DbValue <> "")
+					@unlink(ew_UploadPathEx(TRUE, "../images/") . $products->image3->Upload->DbValue);
+			}
+
+			// Field file
+			if (!is_null($products->file->Upload->Value)) {
+				if ($products->file->Upload->FileName == $products->file->Upload->DbValue) { // Overwrite if same file name
+					$products->file->Upload->SaveToFile("../images/", $rsnew['file'], TRUE);
+					$products->file->Upload->DbValue = ""; // No need to delete any more
+				} else {
+					$products->file->Upload->SaveToFile("../images/", $rsnew['file'], FALSE);
+				}
+			}
+			if ($products->file->Upload->Action == "2" || $products->file->Upload->Action == "3") { // Update/Remove
+				if ($products->file->Upload->DbValue <> "")
+					@unlink(ew_UploadPathEx(TRUE, "../images/") . $products->file->Upload->DbValue);
+			}
+				$conn->raiseErrorFn = 'ew_ErrorFn';
+				$EditRow = $conn->Execute($products->UpdateSQL($rsnew));
+				$conn->raiseErrorFn = '';
+			} else {
+				if ($products->CancelMessage <> "") {
+					$this->setMessage($products->CancelMessage);
+					$products->CancelMessage = "";
+				} else {
+					$this->setMessage("Update cancelled");
+				}
+				$EditRow = FALSE;
+			}
+		}
+
+		// Call Row_Updated event
+		if ($EditRow)
+			$products->Row_Updated($rsold, $rsnew);
+		$rs->Close();
+
+		// Field image
+		$products->image->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field image2
+		$products->image2->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field image3
+		$products->image3->Upload->RemoveFromSession(); // Remove file value from Session
+
+		// Field file
+		$products->file->Upload->RemoveFromSession(); // Remove file value from Session
+		return $EditRow;
+	}
+
+	// Page Load event
+	function Page_Load() {
+
+		//echo "Page Load";
+	}
+
+	// Page Unload event
+	function Page_Unload() {
+
+		//echo "Page Unload";
+	}
+
+	// Form Custom Validate event
+	function Form_CustomValidate(&$CustomError) {
+
+		// Return error message in CustomError
+		return TRUE;
+	}
+}
+?>
